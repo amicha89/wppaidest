@@ -25,7 +25,11 @@
                             <label class="col-sm-3 control-label" for="name">{{ __('First Name') }}</label>
                             <div class="col-sm-6">
                                 <input type="text" name="first_name" class="form-control" value="{{ $applications->first_name }}" placeholder="First Name" id="name">
-                                <span class="text-danger"></span>
+                                @if($errors->has('first_name'))
+                                <span class="help-block">
+                                    <strong class="text-danger">{{ $errors->first('first_name') }}</strong>
+                                </span>
+                                @endif
                             </div>
                         </div>
                         
@@ -33,7 +37,11 @@
                             <label class="col-sm-3 control-label" for="name">{{ __('Last Name') }}</label>
                             <div class="col-sm-6">
                                 <input type="text" name="last_name" class="form-control" value="{{ $applications->last_name }}" placeholder="Last Name" id="name">
-                                <span class="text-danger"></span>
+                                @if($errors->has('last_name'))
+                                <span class="help-block">
+                                    <strong class="text-danger">{{ $errors->first('last_name') }}</strong>
+                                </span>
+                                @endif
                             </div>
                         </div>
                         
@@ -41,7 +49,11 @@
                             <label class="col-sm-3 control-label" for="name">{{ __('Email') }}</label>
                             <div class="col-sm-6">
                                 <input type="text" name="email" class="form-control" value="{{ $applications->email }}" placeholder="Email" id="name">
-                                <span class="text-danger"></span>
+                                @if($errors->has('email'))
+                                <span class="help-block">
+                                    <strong class="text-danger">{{ $errors->first('email') }}</strong>
+                                </span>
+                                @endif
                             </div>
                         </div>
                         
@@ -49,14 +61,22 @@
                             <label class="col-sm-3 control-label" for="name">{{ __('Phone Number') }}</label>
                             <div class="col-sm-6">
                                 <input type="text" name="phone" class="form-control" value="{{ $applications->phone }}" placeholder="Phone Number" id="name">
-                                <span class="text-danger"></span>
+                                @if($errors->has('phone'))
+                                <span class="help-block">
+                                    <strong class="text-danger">{{ $errors->first('phone') }}</strong>
+                                </span>
+                                @endif
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label" for="name">{{ __('Date Of Birth') }}</label>
                             <div class="col-sm-6">
                                 <input type="text" name="dob" class="form-control" value="{{ $applications->dob }}" placeholder="Date Of Birth" id="name">
-                                <span class="text-danger"></span>
+                                @if($errors->has('dob'))
+                                <span class="help-block">
+                                    <strong class="text-danger">{{ $errors->first('dob') }}</strong>
+                                </span>
+                                @endif
                             </div>
                         </div>
                         
@@ -64,7 +84,11 @@
                             <label class="col-sm-3 control-label" for="name">{{ __('Role') }}</label>
                             <div class="col-sm-6">
                                 <input type="text" name="rule" class="form-control" value="{{ $applications->rule }}" placeholder="Role" id="rule">
-                                <span class="text-danger"></span>
+                                @if($errors->has('rule'))
+                                <span class="help-block">
+                                    <strong class="text-danger">{{ $errors->first('rule') }}</strong>
+                                </span>
+                                @endif
                             </div>
                         </div>
                         
@@ -72,7 +96,11 @@
                             <label class="col-sm-3 control-label" for="name">{{ __('Company Name') }}</label>
                             <div class="col-sm-6">
                                 <input type="text" name="company_name" class="form-control" value="{{ $applications->company_name }}" placeholder="Company Name" id="company_name">
-                                <span class="text-danger"></span>
+                                @if($errors->has('company_name'))
+                                <span class="help-block">
+                                    <strong class="text-danger">{{ $errors->first('company_name') }}</strong>
+                                </span>
+                                @endif
                             </div>
                         </div>
                         
@@ -80,7 +108,11 @@
                             <label class="col-sm-3 control-label" for="name">{{ __('Company Number') }}</label>
                             <div class="col-sm-6">
                                 <input type="text" name="company_number" class="form-control" value="{{ $applications->company_number }}" placeholder="Company Number" id="company_number">
-                                <span class="text-danger"></span>
+                                @if($errors->has('company_name'))
+                                <span class="help-block">
+                                    <strong class="text-danger">{{ $errors->first('company_name') }}</strong>
+                                </span>
+                                @endif
                             </div>
                         </div>
                         
@@ -88,14 +120,22 @@
                             <label class="col-sm-3 control-label" for="name">{{ __('Company Type') }}</label>
                             <div class="col-sm-6">
                                 <input type="text" name="company_type" class="form-control" value="{{ $applications->company_type }}" placeholder="Company Type" id="company_type">
-                                <span class="text-danger"></span>
+                                @if($errors->has('company_type'))
+                                <span class="help-block">
+                                    <strong class="text-danger">{{ $errors->first('company_type') }}</strong>
+                                </span>
+                                @endif
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label" for="name">{{ __('Company Industry') }}</label>
                             <div class="col-sm-6">
                                 <input type="text" name="companyIndustry" class="form-control" value="{{ $applications->companyIndustry }}" placeholder="Company Industry" id="companyIndustry">
-                                <span class="text-danger"></span>
+                                @if($errors->has('companyIndustry'))
+                                <span class="help-block">
+                                    <strong class="text-danger">{{ $errors->first('companyIndustry') }}</strong>
+                                </span>
+                                @endif
                             </div>
                         </div>
                         
@@ -103,7 +143,11 @@
                             <label class="col-sm-3 control-label" for="name">{{ __('Registered Country') }}</label>
                             <div class="col-sm-6">
                                 <input type="text" name="registeredCountry" class="form-control" value="{{ $applications->registeredCountry }}" placeholder="Registered Country" id="registeredCountry">
-                                <span class="text-danger"></span>
+                                @if($errors->has('registeredCountry'))
+                                <span class="help-block">
+                                    <strong class="text-danger">{{ $errors->first('registeredCountry') }}</strong>
+                                </span>
+                                @endif
                             </div>
                         </div>
                         
@@ -111,7 +155,11 @@
                             <label class="col-sm-3 control-label" for="name">{{ __('Source of Fund') }}</label>
                             <div class="col-sm-6">
                                 <input type="text" name="source_of_funds" class="form-control" value="{{ $applications->source_of_funds }}" placeholder="Source of Fund" id="source_of_funds">
-                                <span class="text-danger"></span>
+                                @if($errors->has('source_of_funds'))
+                                <span class="help-block">
+                                    <strong class="text-danger">{{ $errors->first('source_of_funds') }}</strong>
+                                </span>
+                                @endif
                             </div>
                         </div>
                         
@@ -119,7 +167,11 @@
                             <label class="col-sm-3 control-label" for="name">{{ __('Street Address') }}</label>
                             <div class="col-sm-6">
                                 <input type="text" name="streetAddress" class="form-control" value="{{ $applications->streetAddress }}" placeholder="Street Address" id="streetAddress">
-                                <span class="text-danger"></span>
+                                @if($errors->has('streetAddress'))
+                                <span class="help-block">
+                                    <strong class="text-danger">{{ $errors->first('streetAddress') }}</strong>
+                                </span>
+                                @endif
                             </div>
                         </div>
                         
@@ -127,21 +179,33 @@
                             <label class="col-sm-3 control-label" for="name">{{ __('City / State') }}</label>
                             <div class="col-sm-6">
                                 <input type="text" name="cityState" class="form-control" value="{{ $applications->cityState }}" placeholder="City / State" id="cityState">
-                                <span class="text-danger"></span>
+                                @if($errors->has('cityState'))
+                                <span class="help-block">
+                                    <strong class="text-danger">{{ $errors->first('cityState') }}</strong>
+                                </span>
+                                @endif
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label" for="name">{{ __('Zip Code') }}</label>
                             <div class="col-sm-6">
                                 <input type="text" name="zipCode" class="form-control" value="{{ $applications->zipCode }}" placeholder="Zip Code" id="zipCode">
-                                <span class="text-danger"></span>
+                                @if($errors->has('zipCode'))
+                                <span class="help-block">
+                                    <strong class="text-danger">{{ $errors->first('zipCode') }}</strong>
+                                </span>
+                                @endif
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label" for="name">{{ __('IP Address') }}</label>
                             <div class="col-sm-6">
                                 <input type="text" name="ipAddress" class="form-control" value="{{ $applications->ipAddress }}" placeholder="IP Address" id="ipAddress">
-                                <span class="text-danger"></span>
+                                @if($errors->has('ipAddress'))
+                                <span class="help-block">
+                                    <strong class="text-danger">{{ $errors->first('ipAddress') }}</strong>
+                                </span>
+                                @endif
                             </div>
                         </div>
                         
@@ -151,10 +215,9 @@
                             <label class="col-sm-3 control-label" for="status">{{ __('Status') }}</label>
                             <div class="col-sm-6">
                                 <select class="select2 form-control" name="status" id="status">
-                                    <option value='Active' {{ $applications->status == 1 ? 'selected' : '' }}>Processing</option>
-                                    <option value='Inactive' {{ $applications->status == 0 ? 'selected' : '' }}>Pending</option>
+                                    <option value='Active' {{ $applications->status == 1 ? 'selected' : '' }}>Accept and proceed</option>
+                                    <option value='Inactive' {{ $applications->status == 0 ? 'selected' : '' }}>Reject</option>
                                 </select>
-                                <span class="text-danger"></span>
                             </div>
                         </div>
                         
@@ -162,7 +225,11 @@
                             <label class="col-sm-3 control-label" for="name">{{ __('Date') }}</label>
                             <div class="col-sm-6">
                                 <input type="text" name="dateTime" class="form-control" value="{{ $applications->dateTime }}" placeholder="Date" id="dateTime">
-                                <span class="text-danger"></span>
+                                @if($errors->has('dateTime'))
+                                <span class="help-block">
+                                    <strong class="text-danger">{{ $errors->first('dateTime') }}</strong>
+                                </span>
+                                @endif
                             </div>
                         </div>
                         

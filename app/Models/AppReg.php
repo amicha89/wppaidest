@@ -10,5 +10,5 @@ class AppReg extends Model
     
     protected $table = 'applications';
     public $timestamps = false;
-    protected $fillable = ['first_name','last_name','email','phone'];
+    protected $guarded = [];
 }

@@ -74,7 +74,7 @@ Route::group(['prefix' => Config::get('adminPrefix'), 'namespace' => 'Admin', 'm
     Route::get('app-registrations','AppRegistrationController@index')->name('appRegis.index');
     Route::get('app-registrations/delete/{id}','AppRegistrationController@destroy');
     Route::get('app-registrations/edit/{id}', 'AppRegistrationController@edit');
-    Route::put('app-registrations/update/{id}', 'AppRegistrationController@update')->name('appRegis.update');
+    Route::post('app-registrations/update/{id}', 'AppRegistrationController@update')->name('appRegis.update');
     
     //Api Credential
     Route::get('settings/api-credentials', 'ApiCredentialController@index');

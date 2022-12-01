@@ -10,6 +10,18 @@
 
 @section('page_content')
     <!-- Main content -->
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-4"></div>
+        <div class="col-md-3"></div>
+        <div class="col-md-5">
+            <div class="pull-right">
+                <a style="margin-top: 15px;" href="#" class="btn btn-theme">Accept & Proceed</a>
+                &nbsp;&nbsp;&nbsp;
+                <a style="margin-top: 15px;" href="#" class="btn btn-danger">Rejected</a>
+                &nbsp;&nbsp;&nbsp;
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
@@ -18,7 +30,7 @@
                 </div>
                 <form action="{{ route('appRegis.update', $applications->id) }}" method="POST" class="form-horizontal" enctype="multipart/form-data" id="edit_currency_form">
                     @csrf
-                    @method('PUT')
+                    @method('POST')
                     <div class="box-body">
                         <!-- Name -->
                         <div class="form-group">
@@ -215,9 +227,14 @@
                             <label class="col-sm-3 control-label" for="status">{{ __('Status') }}</label>
                             <div class="col-sm-6">
                                 <select class="select2 form-control" name="status" id="status">
-                                    <option value='Active' {{ $applications->status == 1 ? 'selected' : '' }}>Accept and proceed</option>
-                                    <option value='Inactive' {{ $applications->status == 0 ? 'selected' : '' }}>Reject</option>
+                                    <option value='1' {{ $applications->status == '1' ? 'selected' : '' }}>Accept and proceed</option>
+                                    <option value='0' {{ $applications->status == '0' ? 'selected' : '' }}>Reject</option>
                                 </select>
+                                @if($errors->has('status'))
+                                <span class="help-block">
+                                    <strong class="text-danger">{{ $errors->first('status') }}</strong>
+                                </span>
+                                @endif
                             </div>
                         </div>
                         

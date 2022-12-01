@@ -7,7 +7,7 @@ use App\DataTables\Admin\AppRegistrationDataTable;
 use Illuminate\Http\Request;
 use App\Models\AppReg;
 use App\Http\Helpers\Common;
-use Session,Config,Validator;
+use Session,Config,Validator,DB;
 
 class AppRegistrationController extends Controller
 {
@@ -36,7 +36,7 @@ class AppRegistrationController extends Controller
     
     public function update(Request $request, $id)
     {
-        $appData = AppReg::find($id);
+        
         $rules = array(
             'first_name'    =>  'required',
             'last_name'    =>  'required',
@@ -53,6 +53,7 @@ class AppRegistrationController extends Controller
             'streetAddress'    =>  'required',
             'cityState'    =>  'required',
             'zipCode'    =>  'required',
+            'status'    =>  'required',
             'dateTime'    =>  'required',
         );
 
@@ -72,16 +73,37 @@ class AppRegistrationController extends Controller
             'streetAddress'    =>  'Street Address',
             'cityState'    =>  'City/State Name',
             'zipCode'    =>  'Zipcode',
+            'status'    =>  'Status',
             'dateTime'    =>  'Date',
         );
         $validator = Validator::make($request->all(), $rules);
         $validator->setAttributeNames($fieldNames);
-
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }else{
-            $appData = $appData->update($request->All());
+            $appData = AppReg::find($id);
+            $appData->first_name  = $request->first_name;
+            $appData->last_name  = $request->last_name;
+            $appData->email = $request->email;
+            $appData->phone = $request->phone;
+            $appData->dob = $request->dob;
+            $appData->rule = $request->rule;
+            $appData->company_name = $request->company_name;
+            $appData->company_number = $request->company_number;
+            $appData->company_type = $request->company_type;
+            $appData->companyIndustry = $request->companyIndustry;
+            $appData->registeredCountry = $request->registeredCountry;
+            $appData->source_of_funds = $request->source_of_funds;
+            $appData->streetAddress = $request->streetAddress;
+            $appData->cityState = $request->cityState;
+            $appData->zipCode = $request->zipCode;
+            $appData->status = $request->status;
+            $appData->dateTime = $request->dateTime;
+
+            $appData->save();
+            //$appData = $appData->update($request->all());
             $this->helper->one_time_message('success', 'Record Updated Successfully');
+            //return view('admin.appregistration.edit');
             return redirect(Config::get('adminPrefix').'/app-registrations');
         }
     }

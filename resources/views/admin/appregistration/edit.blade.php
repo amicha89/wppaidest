@@ -10,23 +10,28 @@
 
 @section('page_content')
     <!-- Main content -->
-    <div class="row" style="margin-bottom: 10px;">
-        <div class="col-md-4"></div>
-        <div class="col-md-3"></div>
-        <div class="col-md-5">
-            <div class="pull-right">
-                <a style="margin-top: 15px;" href="#" class="btn btn-theme">Accept & Proceed</a>
-                &nbsp;&nbsp;&nbsp;
-                <a style="margin-top: 15px;" href="#" class="btn btn-danger">Rejected</a>
-                &nbsp;&nbsp;&nbsp;
+    <div class="box box-default">
+        <div class="box-body">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <div class="top-bar-title padding-bottom pull-left">Edit Registration</div>
+                </div>
+                <div>
+                     <a style="margin-top: 15px;" href="{{ route('create.corporate', $applications->id) }}" class="btn btn-theme confirmation-warning">Accept & Proceed</a>
+                        &nbsp;&nbsp;&nbsp;
+
+                        <a style="margin-top: 15px;" href="{{ route('status.rejected', $applications->id) }}" class="btn btn-danger">Rejected</a>
+                        &nbsp;&nbsp;&nbsp;
+                </div>
             </div>
         </div>
     </div>
+
     <div class="row">
         <div class="col-md-12">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <h3 class="box-title">{{ __('Edit Registration') }}</h3>
+                    
                 </div>
                 <form action="{{ route('appRegis.update', $applications->id) }}" method="POST" class="form-horizontal" enctype="multipart/form-data" id="edit_currency_form">
                     @csrf
@@ -227,8 +232,9 @@
                             <label class="col-sm-3 control-label" for="status">{{ __('Status') }}</label>
                             <div class="col-sm-6">
                                 <select class="select2 form-control" name="status" id="status">
-                                    <option value='1' {{ $applications->status == '1' ? 'selected' : '' }}>Accept and proceed</option>
-                                    <option value='0' {{ $applications->status == '0' ? 'selected' : '' }}>Reject</option>
+                                    <option value='0' {{ $applications->status == '0' ? 'selected' : '' }}>Pending</option>
+                                    <option value='1' {{ $applications->status == '1' ? 'selected' : '' }}>Processing</option>
+                                    <option value='2' {{ $applications->status == '2' ? 'selected' : '' }}>Rejected</option>
                                 </select>
                                 @if($errors->has('status'))
                                 <span class="help-block">
@@ -258,6 +264,28 @@
                         </div>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Confirmation Model -->
+    <div class="modal fade" id="confirmation-warning-modal" role="dialog" style="z-index:1060; color: light blue;">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content" style="width:100%;height:100%; background-color: aliceblue;">
+                <div style="display: block" class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">{{ __('Confirmation') }}</h4>
+                </div>
+
+                <div class="modal-body">
+                    <p><strong>{{ __('Are you sure you want to Process?') }}</strong></p>
+                </div>
+
+                <div class="modal-footer">
+                    <a class="btn btn-danger" id="delete-modal-yes" href="javascript:void(0)">@lang('message.form.yes')</a>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">@lang('message.form.no')</button>
+                </div>
             </div>
         </div>
     </div>

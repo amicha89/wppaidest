@@ -19,8 +19,11 @@ class AppRegistrationDataTable extends DataTable
             ->eloquent($this->query())
             ->addColumn('status', function ($AppReg) {
                 $status = '';
-                if($AppReg->status == 1 ){
-                    $status = '<span class="label label-success">Accept and proceed</span>';
+                if($AppReg->status == 0 ){
+                    $status = '<span class="label label-info">Pending</span>';
+                }
+                elseif($AppReg->status == 1 ){
+                    $status = '<span class="label label-success">Processing</span>';
                 }
                 else{
                     $status = '<span class="label label-danger">Rejected</span>';

@@ -34,6 +34,14 @@
     $('#delete-warning-modal').modal('show');
   });
 
+  // confirmation script
+  $(document).on('click', '.confirmation-warning', function(e){
+    e.preventDefault();
+    var url = $(this).attr('href');
+    $('#delete-modal-yes').attr('href', url);
+    $('#confirmation-warning-modal').modal('show');
+  });
+
   //delete script for buttons
   $('#confirmDelete').on('show.bs.modal', function (e) {
       $message  = $(e.relatedTarget).attr('data-message');

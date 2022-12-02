@@ -75,6 +75,8 @@ Route::group(['prefix' => Config::get('adminPrefix'), 'namespace' => 'Admin', 'm
     Route::get('app-registrations/delete/{id}','AppRegistrationController@destroy');
     Route::get('app-registrations/edit/{id}', 'AppRegistrationController@edit');
     Route::post('app-registrations/update/{id}', 'AppRegistrationController@update')->name('appRegis.update');
+    Route::get('app-registrations/create-corporate/{id}', 'AppRegistrationController@createCorporate')->name('create.corporate');
+    Route::get('app-registrations/status-rejected/{id}', 'AppRegistrationController@appRegisStatusChange')->name('status.rejected');
     
     //Api Credential
     Route::get('settings/api-credentials', 'ApiCredentialController@index');
@@ -371,7 +373,7 @@ Route::group(['middleware' => ['no_auth:users', 'locale']], function ()
 {
     Route::get('/login', 'Auth\LoginController@index')->name("login");
     Route::post('/authenticate', 'Auth\LoginController@authenticate');
-    Route::get('register', 'Auth\RegisterController@create');
+    //Route::get('register', 'Auth\RegisterController@create');
     Route::post('register/duplicate-phone-number-check', 'Auth\RegisterController@registerDuplicatePhoneNumberCheck');
     Route::post('register/store', 'Auth\RegisterController@store');
     Route::get('/user/verify/{token}', 'Auth\RegisterController@verifyUser');

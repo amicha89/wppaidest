@@ -1,5 +1,6 @@
 <?php
 
+
 Route::get('/clearapp', function ()
 {
     Artisan::call('config:clear');
@@ -8,6 +9,10 @@ Route::get('/clearapp', function ()
     Session::flush();
     return redirect('/');
 });
+// use Illuminate\Http\Request;
+// Route::get('/verify', function($email){
+//     return $email;
+// });
 
 Route::get('/', 'HomeController@index');
 
@@ -72,6 +77,10 @@ Route::group(['prefix' => Config::get('adminPrefix'), 'namespace' => 'Admin', 'm
         
     //App Registration
     Route::get('app-registrations','AppRegistrationController@index')->name('appRegis.index');
+    Route::get('app-registrations/create','AppRegistrationController@create');
+    // Route::get('app-registrations/verify', 'AppRegistrationController@getAppEmailVerification'); //get app email verificaiton data
+    // Route::post('app-registrations/verify-email', 'AppRegistrationController@appEmailconfirmation'); // appEmail Confirmation
+    Route::post('app-registrations/store','AppRegistrationController@store');
     Route::get('app-registrations/delete/{id}','AppRegistrationController@destroy');
     Route::get('app-registrations/edit/{id}', 'AppRegistrationController@edit');
     Route::post('app-registrations/update/{id}', 'AppRegistrationController@update')->name('appRegis.update');
@@ -373,6 +382,8 @@ Route::group(['middleware' => ['no_auth:users', 'locale']], function ()
 {
     Route::get('/login', 'Auth\LoginController@index')->name("login");
     Route::post('/authenticate', 'Auth\LoginController@authenticate');
+    Route::get('/verify', 'Auth\LoginController@getAppEmailVerification'); //app email verify view
+    Route::post('/verify-email', 'Auth\LoginController@appEmailconfirmation')->name('verify-email'); // appEmail Confirmation
     //Route::get('register', 'Auth\RegisterController@create');
     Route::post('register/duplicate-phone-number-check', 'Auth\RegisterController@registerDuplicatePhoneNumberCheck');
     Route::post('register/store', 'Auth\RegisterController@store');

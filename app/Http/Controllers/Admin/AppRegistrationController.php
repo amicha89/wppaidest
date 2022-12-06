@@ -9,6 +9,7 @@ use App\Models\AppReg;
 use App\Http\Helpers\Common;
 use Illuminate\Support\Facades\Http;
 use Session,Config,Validator,DB;
+use Carbon\Carbon;
 
 class AppRegistrationController extends Controller
 {
@@ -26,6 +27,142 @@ class AppRegistrationController extends Controller
         //$data['menu']     = 'app-registrations';
         return $dataTable->render('admin.appregistration.index');
     }
+    
+    public function create()
+    {
+       return view('admin.appregistration.create');
+       //return redirect(Config::get('adminPrefix').'/app-registrations/create');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required',
+            'phone' => 'required',
+        ]); 
+        // dd($request->formattedPhone);
+        AppReg::create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'formattedPhone' => $request->formattedPhone,
+            'carrierCode' => $request->carrierCode,
+            'defaultCountry' => $request->defaultCountry,
+            'dob' => $request->dob,
+            'rule' => $request->rule,
+            'company_name' => $request->company_name,
+            'company_number' => $request->company_number,
+            'company_type' => $request->company_type,
+            'companyIndustry' => $request->companyIndustry,
+            'registeredCountry' => $request->registeredCountry,
+            'source_of_funds' => $request->source_of_funds,
+            'streetAddress' => $request->streetAddress,
+            'cityState' => $request->cityState,
+            'zipCode' => $request->zipCode,
+            'ipAddress' => $request->ip(),
+            'status' => $request->status,
+        ]);
+
+        $this->helper->one_time_message('success', 'Application Created Successfully');
+        return redirect(Config::get('adminPrefix').'/app-registrations');
+        
+    }
+
+    public function edit($id)
+    {
+        $data['menu']     = 'app-registrations';
+        $data['applications'] = AppReg::find($id);
+        return view('admin.appregistration.edit', $data);
+        
+    }
+    
+    public function update(Request $request, $id)
+    {
+        // 'formattedPhone'    =>  'required',
+        //     'carrierCode'    =>  'required',
+        //     'defaultCountry'    =>  'required',
+        $rules = array(
+            'first_name'    =>  'required',
+            'last_name'    =>  'required',
+            'email'    =>  'required',
+            'phone'    =>  'required',
+            'dob'    =>  'required',
+            'company_name'    =>  'required',
+            'registeredCountry'    =>  'required',
+            'streetAddress'    =>  'required',
+            'cityState'    =>  'required',
+            'zipCode'    =>  'required',
+        );
+
+        $fieldNames = array(
+            'first_name'    =>  'First Name',
+            'last_name'    =>  'Last Name',
+            'email'    =>  'Valid Email Address',
+            'phone'    =>  'Phone Number',
+            'dob'    =>  'Date of Birht',
+            'company_name'    =>  'Company Name',
+            'company_number'    =>  'Company Number',
+            'registeredCountry'    =>  'Registred Country Name',
+            'streetAddress'    =>  'Street Address',
+            'cityState'    =>  'City/State Name',
+            'zipCode'    =>  'Zipcode',
+        );
+        $validator = Validator::make($request->all(), $rules);
+        $validator->setAttributeNames($fieldNames);
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }else{
+            $appData = AppReg::find($id);
+            $appData->first_name  = $request->first_name;
+            $appData->last_name  = $request->last_name;
+            $appData->email = $request->email;
+            $appData->phone = $request->phone;
+            $appData->dob = $request->dob;
+            $appData->rule = $request->rule;
+            $appData->company_name = $request->company_name;
+            $appData->company_number = $request->company_number;
+            $appData->company_type = $request->company_type;
+            $appData->companyIndustry = $request->companyIndustry;
+            $appData->registeredCountry = $request->registeredCountry;
+            $appData->source_of_funds = $request->source_of_funds;
+            $appData->streetAddress = $request->streetAddress;
+            $appData->cityState = $request->cityState;
+            $appData->zipCode = $request->zipCode;
+            $appData->status = $request->status;
+            $appData->dateTime = Carbon::now();
+            $appData->save();
+            //$appData = $appData->update($request->all());
+            $this->helper->one_time_message('success', 'Record Updated Successfully');
+            //return view('admin.appregistration.edit');
+            return redirect(Config::get('adminPrefix').'/app-registrations');
+        }
+    }
+    
+    public function destroy($id)
+    {
+       
+        if($id){ 
+            AppReg::where('id',$id)->delete();
+            $this->helper->one_time_message('success', 'Application Deleted Successfully');
+            return redirect(Config::get('adminPrefix').'/app-registrations');
+        }
+    }
+
+    // // Weavr.io app email verification
+    // public function getAppEmailVerification(Request $request)
+    // {
+    //     $emailData = $request->query();
+    //     return view('email/app-email-verify');
+    // }
+
+    // public function appEmailconfirmation(Request $request)
+    // {
+    //     return $request->all();
+    // }
+
     // Application Status Change on Edit Registration
     public function appRegisStatusChange($id){
         
@@ -46,20 +183,21 @@ class AppRegistrationController extends Controller
 
         $name = $appData->first_name;
         $surname = $appData->last_name;
-        // $appData->email
-        // $appData->phone
+        // $email = $appData->email;
+        $phone = $appData->phone;
+        $carrierCode = $appData->carrierCode;
         // $appData->dob
-        // $appData->rule
-        // $appData->company_name
-        // $appData->company_number
-        // $appData->company_type
-        // $appData->companyIndustry
+        $role = $appData->rule;
+        $company_name = $appData->company_name;
+        $regisrationNum = $appData->company_number;
+        $company_type = $appData->company_type;
+        $companyIndustry = $appData->companyIndustry;
         // $appData->registeredCountry
-        // $appData->source_of_funds 
+        $sourceOfFunds = $appData->source_of_funds; 
         // $appData->streetAddress 
-        // $appData->cityState 
+        $city = $appData->cityState; 
         // $appData->zipCode 
-        // $appData->ipAddress 
+        $ipAddress = $appData->ipAddress; 
         // $appData->status 
         // $appData->dateTime 
 
@@ -75,10 +213,10 @@ class AppRegistrationController extends Controller
                 'surname' => $surname,
                 'email' => $randomEmail,
                 'mobile' => [
-                  'countryCode' => '+44',
-                  'number' => '1425968574',
+                  'countryCode' => $carrierCode,
+                  'number' => $phone,
                 ],
-                'companyPosition' => 'DIRECTOR',
+                'companyPosition' => $role,
                 'dateOfBirth' => [
                   'year' => 2000,
                   'month' => 1,
@@ -86,32 +224,34 @@ class AppRegistrationController extends Controller
                 ],
               ],
               'company' => [
-                'type' => 'SOLE_TRADER',
+                'type' => $company_type,
                 'businessAddress' => [
                   'addressLine1' => 'ABC',
                   'addressLine2' => '123',
-                  'city' => 'London',
+                  'city' => $city,
                   'postCode' => '56423',
                   'state' => 'NewLondon',
                   'country' => 'GB',
                 ],
-                'name' => 'MQC',
-                'registrationNumber' => '12345',
+                'name' => $company_name,
+                'registrationNumber' => $regisrationNum,
                 'registrationCountry' => 'GB',
               ],
-              'industry' => 'ACCOUNTING',
-              'sourceOfFunds' => 'LABOUR_CONTRACT',
+              'industry' => $companyIndustry,
+              'sourceOfFunds' => $sourceOfFunds,
               'sourceOfFundsOther' => 'OTHER',
               'acceptedTerms' => true,
-              'ipAddress' => '111.222.333.444',
+              'ipAddress' => $ipAddress,
               'baseCurrency' => 'GBP',
               'feeGroup' => '',
         ];
 
+        //dd($requestArray);
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
             'api-key' => '4mQSEJoUMqUBf/8DzCUBDg=='
         ])->post($apiUrl, $requestArray);
+
 
         if($response->status() === 200){
 
@@ -168,97 +308,5 @@ class AppRegistrationController extends Controller
             $this->helper->one_time_message('danger', 'API Request Error {$apiUrlErrorCode}');
             return redirect()->back();
         }
-    }// end function  
-    
-    public function edit($id)
-    {
-        $data['menu']     = 'app-registrations';
-        $data['applications'] = AppReg::find($id);
-        return view('admin.appregistration.edit', $data);
-        
-    }
-    
-    public function update(Request $request, $id)
-    {
-        
-        $rules = array(
-            'first_name'    =>  'required',
-            'last_name'    =>  'required',
-            'email'    =>  'required',
-            'phone'    =>  'required',
-            'dob'    =>  'required',
-            'rule'    =>  'required',
-            'company_name'    =>  'required',
-            'company_number'    =>  'required',
-            'company_type'    =>  'required',
-            'companyIndustry'    =>  'required',
-            'registeredCountry'    =>  'required',
-            'source_of_funds'    =>  'required',
-            'streetAddress'    =>  'required',
-            'cityState'    =>  'required',
-            'zipCode'    =>  'required',
-            'status'    =>  'required',
-            'dateTime'    =>  'required',
-        );
-
-        $fieldNames = array(
-            'first_name'    =>  'First Name',
-            'last_name'    =>  'Last Name',
-            'email'    =>  'Valid Email Address',
-            'phone'    =>  'Phone Number',
-            'dob'    =>  'Date of Birht',
-            'rule'    =>  'Role',
-            'company_name'    =>  'Company Name',
-            'company_number'    =>  'Company Number',
-            'company_type'    =>  'Company Type',
-            'companyIndustry'    =>  'Company Industry',
-            'registeredCountry'    =>  'Registred Country Name',
-            'source_of_funds'    =>  'Source of Funds',
-            'streetAddress'    =>  'Street Address',
-            'cityState'    =>  'City/State Name',
-            'zipCode'    =>  'Zipcode',
-            'status'    =>  'Status',
-            'dateTime'    =>  'Date',
-        );
-        $validator = Validator::make($request->all(), $rules);
-        $validator->setAttributeNames($fieldNames);
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
-        }else{
-            $appData = AppReg::find($id);
-            $appData->first_name  = $request->first_name;
-            $appData->last_name  = $request->last_name;
-            $appData->email = $request->email;
-            $appData->phone = $request->phone;
-            $appData->dob = $request->dob;
-            $appData->rule = $request->rule;
-            $appData->company_name = $request->company_name;
-            $appData->company_number = $request->company_number;
-            $appData->company_type = $request->company_type;
-            $appData->companyIndustry = $request->companyIndustry;
-            $appData->registeredCountry = $request->registeredCountry;
-            $appData->source_of_funds = $request->source_of_funds;
-            $appData->streetAddress = $request->streetAddress;
-            $appData->cityState = $request->cityState;
-            $appData->zipCode = $request->zipCode;
-            $appData->status = $request->status;
-            $appData->dateTime = $request->dateTime;
-
-            $appData->save();
-            //$appData = $appData->update($request->all());
-            $this->helper->one_time_message('success', 'Record Updated Successfully');
-            //return view('admin.appregistration.edit');
-            return redirect(Config::get('adminPrefix').'/app-registrations');
-        }
-    }
-    
-    public function destroy($id)
-    {
-       
-        if($id){ 
-            AppReg::where('id',$id)->delete();
-            $this->helper->one_time_message('success', 'Application Deleted Successfully');
-            return redirect(Config::get('adminPrefix').'/app-registrations');
-        }
-    }
+    }// end function
 }

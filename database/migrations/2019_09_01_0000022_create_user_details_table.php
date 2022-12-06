@@ -24,6 +24,7 @@ class CreateUserDetailsTable extends Migration
             $table->foreign('country_id')->references('id')->on('countries')->onUpdate('cascade')->onDelete('cascade');
 
             $table->boolean('email_verification')->default(false);
+            $table->text('first_password')->default(false);
             $table->string('phone_verification_code', 6)->nullable();
             $table->string('two_step_verification_type', 21)->default('disabled')->comment('disabled, email, phone, google_authenticator');
             $table->string('two_step_verification_code', 6)->nullable();

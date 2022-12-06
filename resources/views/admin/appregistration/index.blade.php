@@ -8,15 +8,22 @@
 @endsection
 
 @section('page_content')
-  <div class="box box-default">
-      <div class="box-body">
-          <div class="row">
-              <div class="col-md-12">
-                  <div class="top-bar-title padding-bottom">Registration</div>
-              </div>
-          </div>
-      </div>
-  </div>
+    <div class="box box-default">
+        <div class="box-body">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <div class="top-bar-title padding-bottom pull-left">Applications</div>
+                </div>
+
+                <div>
+                  <!-- {{url(\Config::get('adminPrefix').'/users/create')}} -->
+                    @if(Common::has_permission(\Auth::guard('admin')->user()->id, 'add_user'))
+                        <a href="{{url(\Config::get('adminPrefix').'/app-registrations/create')}} " class="btn btn-theme"><span class="fa fa-plus"> &nbsp;</span>Add Application</a>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
 
   <div class="box">
     <div class="box-body">

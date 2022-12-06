@@ -6,6 +6,7 @@ use App\Http\Controllers\Users\EmailController;
 use Illuminate\Support\Facades\{Config,
     Session,
     Auth,
+    Http,
     DB
 };
 use App\Http\Controllers\Controller;
@@ -376,6 +377,40 @@ class LoginController extends Controller
                 $twoStepVerification_msg = str_replace('{soft_name}', settings('name'), $twoStepVerification_msg);
                 $this->email->sendEmail(auth()->user()->email, $twoStepVerification_sub, $twoStepVerification_msg);
             }
+        }
+    }
+    // application email verification 
+    public function getAppEmailVerification(Request $request)
+    {
+        $emailData = $request->query();
+
+        return view('emails.app-email', ['emailData' => $emailData]);
+    }
+
+    public function appEmailconfirmation(Request $request)
+    {
+        
+        $checkEmailVerification = User::where(['email' => $request->email])->first(['id']);
+        $userID = $checkEmailVerification->id;
+        if($checkEmailVerification->user_detail->email_verification == 0){
+            
+            $requestArray = [
+                'email' => $request->email,
+                'verificationCode'=>'123456', 
+            ];
+
+            $apiUrl = 'https://sandbox.weavr.io/multi/corporates/verification/email/verify';
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+                'api-key' => '4mQSEJoUMqUBf/8DzCUBDg=='
+            ])->post($apiUrl, $requestArray);
+
+            if($response->status() === 204){
+                UserDetail::where('user_id', $userID)->update(['first_password' => '1']);
+            }else{
+                return $response->status();
+            }
+
         }
     }
 

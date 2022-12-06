@@ -17,11 +17,15 @@
                     <div class="top-bar-title padding-bottom pull-left">Edit Registration</div>
                 </div>
                 <div>
-                     <a style="margin-top: 15px;" href="{{ route('create.corporate', $applications->id) }}" class="btn btn-theme confirmation-warning">Accept & Proceed</a>
-                        &nbsp;&nbsp;&nbsp;
-
-                        <a style="margin-top: 15px;" href="{{ route('status.rejected', $applications->id) }}" class="btn btn-danger">Rejected</a>
-                        &nbsp;&nbsp;&nbsp;
+                @if ($applications->status == 1)
+                    <a style="margin-top: 15px;" href="{{ route('status.rejected', $applications->id) }}" class="btn btn-danger pull-right">Rejected</a>
+                    &nbsp;&nbsp;&nbsp;
+                @else
+                    <a style="margin-top: 15px;" href="{{ route('create.corporate', $applications->id) }}" class="btn btn-theme confirmation-warning">Accept & Proceed</a>
+                    &nbsp;&nbsp;&nbsp;
+                    <a style="margin-top: 15px;" href="{{ route('status.rejected', $applications->id) }}" class="btn btn-danger">Rejected</a>
+                    &nbsp;&nbsp;&nbsp;
+                @endif
                 </div>
             </div>
         </div>
@@ -33,237 +37,251 @@
                 <div class="box-header with-border">
                     
                 </div>
-                <form action="{{ route('appRegis.update', $applications->id) }}" method="POST" class="form-horizontal" enctype="multipart/form-data" id="edit_currency_form">
-                    @csrf
-                    @method('POST')
-                    <div class="box-body">
-                        <!-- Name -->
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="name">{{ __('First Name') }}</label>
-                            <div class="col-sm-6">
-                                <input type="text" name="first_name" class="form-control" value="{{ $applications->first_name }}" placeholder="First Name" id="name">
-                                @if($errors->has('first_name'))
-                                <span class="help-block">
-                                    <strong class="text-danger">{{ $errors->first('first_name') }}</strong>
-                                </span>
-                                @endif
+                <form action="{{ route('appRegis.update', $applications->id) }}" class="form-horizontal" id="user_form" method="POST">
+                        @csrf
+                        @method('POST')
+                        <input type="hidden" name="defaultCountry" id="defaultCountry" class="form-control">
+                        <input type="hidden" name="carrierCode" id="carrierCode" class="form-control">
+                        <input type="hidden" name="formattedPhone" id="formattedPhone" class="form-control">
+
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="first_name">
+                                        First Name
+                                    </label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control" placeholder="Enter First Name" name="first_name" type="text" id="first_name" value="{{ $applications->first_name ?? '' }}">
+                                        </input>
+
+                                        @if($errors->has('first_name'))
+                                            <span class="error">
+                                                {{ $errors->first('first_name') }}
+                                            </span>
+                                        @endif
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="last_name">
+                                        Last Name
+                                    </label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control" placeholder="Enter Last Name" name="last_name" type="text" id="last_name" value="{{ $applications->last_name ?? '' }}">
+                                        </input>
+                                        @if($errors->has('last_name'))
+                                            <span class="error">
+                                                {{ $errors->first('last_name') }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="inputEmail3">
+                                        Email
+                                    </label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control" value="{{ $applications->email ?? ''}}" placeholder="Enter a valid email" name="email" type="email" id="email">
+                                        </input>
+                                        @if($errors->has('email'))
+                                            <span class="error">
+                                                {{ $errors->first('email') }}
+                                            </span>
+                                        @endif
+                                        <span id="email_error"></span>
+                                        <span id="email_ok" class="text-success"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="phone">
+                                        Phone
+                                    </label>
+                                    <div class="col-sm-6">
+                                        <input type="tel" class="form-control" value="{{ $applications->phone ?? '' }}" id="phone" name="phone">
+                                        <span id="phone-error"></span>
+                                        <span id="tel-error"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="dob">
+                                        Date of Birth
+                                    </label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control" placeholder="" name="dob" type="text" id="dob" value="{{ $applications->dob }}">
+                                        </input>
+                                        @if($errors->has('dob'))
+                                            <span class="error">
+                                                {{ $errors->first('dob') }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="rule">Company Position</label>
+                                    <div class="col-sm-6">
+                                        <select class="select2 form-control" name="rule" id="rule">
+                                            <option value='AUTHORIZED_REPRESENTATIVE' {{ $applications->source_of_funds == "AUTHORIZED_REPRESENTATIVE" ? 'selected' : '' }}>Authorized Representative</option>
+                                            <option value='DIRECTOR' {{ $applications->source_of_funds == "DIRECTOR" ? 'selected' : '' }}>Company Director</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="inputEmail3">
+                                        Company Name
+                                    </label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control" placeholder="Enter Company Name" name="company_name" type="text" id="last_name" value="{{ $applications->company_name ?? '' }}">
+                                        </input>
+                                        @if($errors->has('company_name'))
+                                            <span class="error">
+                                                {{ $errors->first('company_name') }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="">
+                                        Registration Number
+                                    </label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control" placeholder="Enter Registration Number" name="company_number" type="text" id="" value="{{ $applications->company_number ?? '' }}">
+                                        </input>
+                                        @if($errors->has('company_number'))
+                                            <span class="error">
+                                                {{ $errors->first('company_number') }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="company_type">Company Type</label>
+                                    <div class="col-sm-6">
+                                        <select class="select2 form-control" name="company_type" id="company_type">
+                                            <option value='SOLE_TRADER' {{ $applications->source_of_funds == "SOLE_TRADER" ? 'selected' : '' }}>Sole Trader</option>
+                                            <option value='LTD_COMPANY' {{ $applications->source_of_funds == "LTD_COMPANY" ? 'selected' : '' }}>LTD Company</option>
+                                            <option value='LLP_COMPANY' {{ $applications->source_of_funds == "LLP_COMPANY" ? 'selected' : '' }}>LLP Company</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="companyIndustry">Company Industry</label>
+                                    <div class="col-sm-6">
+                                        <select class="select2 form-control" name="companyIndustry" id="companyIndustry">
+                                            <option value='ACCOUNTING' {{ $applications->source_of_funds == "ACCOUNTING" ? 'selected' : '' }}>ACCOUNTING</option>
+                                            <option value='AUDIT' {{ $applications->source_of_funds == "AUDIT" ? 'selected' : '' }}>AUDIT</option>
+                                            <option value='FINANCE' {{ $applications->source_of_funds == "FINANCE" ? 'selected' : '' }}>FINANCE</option>
+                                            <option value='PUBLIC_SECTOR_ADMINISTRATION' {{ $applications->source_of_funds == "PUBLIC_SECTOR_ADMINISTRATION" ? 'selected' : '' }}>PUBLIC SECTOR ADMINISTRATION</option>
+                                            <option value='ART_ENTERTAINMENT' {{ $applications->source_of_funds == "ART_ENTERTAINMENT" ? 'selected' : '' }}>ART ENTERTAINMENT</option>
+                                            <option value='ART_ENTERTAINMENT' {{ $applications->source_of_funds == "ART_ENTERTAINMENT" ? 'selected' : '' }}>AUTO AVIATION</option>
+                                            <option value='BANKING_LENDING' {{ $applications->source_of_funds == "BANKING_LENDING" ? 'selected' : '' }}>BANKING LENDING</option>
+                                            <option value='BUSINESS_CONSULTANCY_LEGAL' {{ $applications->source_of_funds == "BUSINESS_CONSULTANCY_LEGAL" ? 'selected' : '' }}>BUSINESS CONSULTANCY LEGAL</option>
+                                            <option value='CONSTRUCTION_REPAIR' {{ $applications->source_of_funds == "CONSTRUCTION_REPAIR" ? 'selected' : '' }}>CONSTRUCTION REPAIR</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="">
+                                        Registered Country
+                                    </label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control" placeholder="Enter Company Name" name="registeredCountry" type="text" id="" value="{{ $applications->registeredCountry ?? '' }}">
+                                        </input>
+                                        @if($errors->has('registeredCountry'))
+                                            <span class="error">
+                                                {{ $errors->first('registeredCountry') }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                <label class="col-sm-3 control-label" for="source_of_funds">Source of Funds</label>
+                                <div class="col-sm-6">
+                                    <select class="select2 form-control" name="source_of_funds" id="source_of_funds">
+                                        <option value='LABOUR_CONTRACT' {{ $applications->source_of_funds == "LABOUR_CONTRACT" ? 'selected' : '' }} >LABOUR CONTRACT</option>
+                                        <option value='CIVIL_CONTRACT' {{ $applications->source_of_funds == "CIVIL_CONTRACT" ? 'selected' : '' }}>CIVIL CONTRACT</option>
+                                        <option value='FUNDS_FROM_OTHER_AUXILIARY_SOURCES' {{ $applications->source_of_funds == "FUNDS_FROM_OTHER_AUXILIARY_SOURCES" ? 'selected' : '' }}>FUNDS FROM OTHER AUXILIARY SOURCES</option>
+                                        <option value='RENT' {{ $applications->source_of_funds == "RENT" ? 'selected' : '' }}>RENT</option>
+                                        <option value='FUNDS_FROM_OTHER_AUXILIARY_SOURCES' {{ $applications->source_of_funds == "FUNDS_FROM_OTHER_AUXILIARY_SOURCES" ? 'selected' : '' }}>FUNDS FROM OTHER AUXILIARY SOURCES</option>
+                                        <option value='SALE_OF_MOVABLE_ASSETS' {{ $applications->source_of_funds == "SALE_OF_MOVABLE_ASSETS" ? 'selected' : '' }}>SALE OF MOVABLE ASSETS</option>
+                                        <option value='SALE_OF_REAL_ESTATE' {{ $applications->source_of_funds == "SALE_OF_REAL_ESTATE" ? 'selected' : '' }}>SALE OF REAL ESTATE</option>
+                                    </select>
+                                </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="streetAddress">
+                                        Street Address
+                                    </label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control" placeholder="Enter Street Address" name="streetAddress" type="text" id="streetAddress" value="{{ $applications->streetAddress ?? '' }}">
+                                        </input>
+                                        @if($errors->has('streetAddress'))
+                                            <span class="error">
+                                                {{ $errors->first('streetAddress') }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="cityState">
+                                        City / State
+                                    </label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control" placeholder="Enter City/State" name="cityState" type="text" id="cityState" value="{{ $applications->cityState ?? '' }}">
+                                        </input>
+                                        @if($errors->has('cityState'))
+                                            <span class="error">
+                                                {{ $errors->first('cityState') }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="zipCode">
+                                        Zip Code
+                                    </label>
+                                    <div class="col-sm-6">
+                                        <input class="form-control" placeholder="Enter Zip Code" name="zipCode" type="text" id="" value="{{ $applications->zipCode ?? '' }}">
+                                        </input>
+                                        @if($errors->has('zipCode'))
+                                            <span class="error">
+                                                {{ $errors->first('zipCode') }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <!-- Status -->
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label" for="status">Status</label>
+                                    <div class="col-sm-6">
+                                        <select class="select2 form-control" name="status" id="status">
+                                            <option value='0' {{ $applications->status == '0' ? 'selected' : '' }}>Pending</option>
+                                            <option value='1' {{ $applications->status == '1' ? 'selected' : '' }}>Processing</option>
+                                            <option value='2' {{ $applications->status == '2' ? 'selected' : '' }}>Rejected</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="box-footer">
+                                    <a class="btn btn-theme-danger pull-left" href="{{ url(\Config::get('adminPrefix').'/app-registrations') }}" id="users_cancel">Cancel</a>
+                                    <button type="submit" class="btn btn-theme pull-right" id="users_create"><i class="fa fa-spinner fa-spin" style="display: none;"></i> <span id="users_create_text">Update</span></button>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="name">{{ __('Last Name') }}</label>
-                            <div class="col-sm-6">
-                                <input type="text" name="last_name" class="form-control" value="{{ $applications->last_name }}" placeholder="Last Name" id="name">
-                                @if($errors->has('last_name'))
-                                <span class="help-block">
-                                    <strong class="text-danger">{{ $errors->first('last_name') }}</strong>
-                                </span>
-                                @endif
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="name">{{ __('Email') }}</label>
-                            <div class="col-sm-6">
-                                <input type="text" name="email" class="form-control" value="{{ $applications->email }}" placeholder="Email" id="name">
-                                @if($errors->has('email'))
-                                <span class="help-block">
-                                    <strong class="text-danger">{{ $errors->first('email') }}</strong>
-                                </span>
-                                @endif
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="name">{{ __('Phone Number') }}</label>
-                            <div class="col-sm-6">
-                                <input type="text" name="phone" class="form-control" value="{{ $applications->phone }}" placeholder="Phone Number" id="name">
-                                @if($errors->has('phone'))
-                                <span class="help-block">
-                                    <strong class="text-danger">{{ $errors->first('phone') }}</strong>
-                                </span>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="name">{{ __('Date Of Birth') }}</label>
-                            <div class="col-sm-6">
-                                <input type="text" name="dob" class="form-control" value="{{ $applications->dob }}" placeholder="Date Of Birth" id="name">
-                                @if($errors->has('dob'))
-                                <span class="help-block">
-                                    <strong class="text-danger">{{ $errors->first('dob') }}</strong>
-                                </span>
-                                @endif
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="name">{{ __('Role') }}</label>
-                            <div class="col-sm-6">
-                                <input type="text" name="rule" class="form-control" value="{{ $applications->rule }}" placeholder="Role" id="rule">
-                                @if($errors->has('rule'))
-                                <span class="help-block">
-                                    <strong class="text-danger">{{ $errors->first('rule') }}</strong>
-                                </span>
-                                @endif
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="name">{{ __('Company Name') }}</label>
-                            <div class="col-sm-6">
-                                <input type="text" name="company_name" class="form-control" value="{{ $applications->company_name }}" placeholder="Company Name" id="company_name">
-                                @if($errors->has('company_name'))
-                                <span class="help-block">
-                                    <strong class="text-danger">{{ $errors->first('company_name') }}</strong>
-                                </span>
-                                @endif
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="name">{{ __('Company Number') }}</label>
-                            <div class="col-sm-6">
-                                <input type="text" name="company_number" class="form-control" value="{{ $applications->company_number }}" placeholder="Company Number" id="company_number">
-                                @if($errors->has('company_name'))
-                                <span class="help-block">
-                                    <strong class="text-danger">{{ $errors->first('company_name') }}</strong>
-                                </span>
-                                @endif
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="name">{{ __('Company Type') }}</label>
-                            <div class="col-sm-6">
-                                <input type="text" name="company_type" class="form-control" value="{{ $applications->company_type }}" placeholder="Company Type" id="company_type">
-                                @if($errors->has('company_type'))
-                                <span class="help-block">
-                                    <strong class="text-danger">{{ $errors->first('company_type') }}</strong>
-                                </span>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="name">{{ __('Company Industry') }}</label>
-                            <div class="col-sm-6">
-                                <input type="text" name="companyIndustry" class="form-control" value="{{ $applications->companyIndustry }}" placeholder="Company Industry" id="companyIndustry">
-                                @if($errors->has('companyIndustry'))
-                                <span class="help-block">
-                                    <strong class="text-danger">{{ $errors->first('companyIndustry') }}</strong>
-                                </span>
-                                @endif
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="name">{{ __('Registered Country') }}</label>
-                            <div class="col-sm-6">
-                                <input type="text" name="registeredCountry" class="form-control" value="{{ $applications->registeredCountry }}" placeholder="Registered Country" id="registeredCountry">
-                                @if($errors->has('registeredCountry'))
-                                <span class="help-block">
-                                    <strong class="text-danger">{{ $errors->first('registeredCountry') }}</strong>
-                                </span>
-                                @endif
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="name">{{ __('Source of Fund') }}</label>
-                            <div class="col-sm-6">
-                                <input type="text" name="source_of_funds" class="form-control" value="{{ $applications->source_of_funds }}" placeholder="Source of Fund" id="source_of_funds">
-                                @if($errors->has('source_of_funds'))
-                                <span class="help-block">
-                                    <strong class="text-danger">{{ $errors->first('source_of_funds') }}</strong>
-                                </span>
-                                @endif
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="name">{{ __('Street Address') }}</label>
-                            <div class="col-sm-6">
-                                <input type="text" name="streetAddress" class="form-control" value="{{ $applications->streetAddress }}" placeholder="Street Address" id="streetAddress">
-                                @if($errors->has('streetAddress'))
-                                <span class="help-block">
-                                    <strong class="text-danger">{{ $errors->first('streetAddress') }}</strong>
-                                </span>
-                                @endif
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="name">{{ __('City / State') }}</label>
-                            <div class="col-sm-6">
-                                <input type="text" name="cityState" class="form-control" value="{{ $applications->cityState }}" placeholder="City / State" id="cityState">
-                                @if($errors->has('cityState'))
-                                <span class="help-block">
-                                    <strong class="text-danger">{{ $errors->first('cityState') }}</strong>
-                                </span>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="name">{{ __('Zip Code') }}</label>
-                            <div class="col-sm-6">
-                                <input type="text" name="zipCode" class="form-control" value="{{ $applications->zipCode }}" placeholder="Zip Code" id="zipCode">
-                                @if($errors->has('zipCode'))
-                                <span class="help-block">
-                                    <strong class="text-danger">{{ $errors->first('zipCode') }}</strong>
-                                </span>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="name">{{ __('IP Address') }}</label>
-                            <div class="col-sm-6">
-                                <input type="text" name="ipAddress" class="form-control" value="{{ $applications->ipAddress }}" placeholder="IP Address" id="ipAddress">
-                                @if($errors->has('ipAddress'))
-                                <span class="help-block">
-                                    <strong class="text-danger">{{ $errors->first('ipAddress') }}</strong>
-                                </span>
-                                @endif
-                            </div>
-                        </div>
-                        
-                        <!-- Status -->
-                        
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="status">{{ __('Status') }}</label>
-                            <div class="col-sm-6">
-                                <select class="select2 form-control" name="status" id="status">
-                                    <option value='0' {{ $applications->status == '0' ? 'selected' : '' }}>Pending</option>
-                                    <option value='1' {{ $applications->status == '1' ? 'selected' : '' }}>Processing</option>
-                                    <option value='2' {{ $applications->status == '2' ? 'selected' : '' }}>Rejected</option>
-                                </select>
-                                @if($errors->has('status'))
-                                <span class="help-block">
-                                    <strong class="text-danger">{{ $errors->first('status') }}</strong>
-                                </span>
-                                @endif
-                            </div>
-                        </div>
-                        
-                         <div class="form-group">
-                            <label class="col-sm-3 control-label" for="name">{{ __('Date') }}</label>
-                            <div class="col-sm-6">
-                                <input type="text" name="dateTime" class="form-control" value="{{ $applications->dateTime }}" placeholder="Date" id="dateTime">
-                                @if($errors->has('dateTime'))
-                                <span class="help-block">
-                                    <strong class="text-danger">{{ $errors->first('dateTime') }}</strong>
-                                </span>
-                                @endif
-                            </div>
-                        </div>
-                        
-                        <div class="box-footer">
-                            <a class="btn btn-theme-danger" href="{{ route('appRegis.index') }}">{{ __('Cancel') }}</a>
-                            <button type="submit" class="btn btn-theme pull-right" id="currency-edit-submit-btn">
-                                <i class="fa fa-spinner fa-spin" style="display: none;"></i> <span id="currency-edit-submit-btn-text">{{ __('Update') }}</span>
-                            </button>
-                        </div>
-                    </div>
-                </form>
+                        </input>
+                    </form>
+                
             </div>
         </div>
     </div>

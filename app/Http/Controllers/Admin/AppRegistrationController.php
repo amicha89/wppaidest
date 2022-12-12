@@ -150,19 +150,6 @@ class AppRegistrationController extends Controller
             return redirect(Config::get('adminPrefix').'/app-registrations');
         }
     }
-
-    // // Weavr.io app email verification
-    // public function getAppEmailVerification(Request $request)
-    // {
-    //     $emailData = $request->query();
-    //     return view('email/app-email-verify');
-    // }
-
-    // public function appEmailconfirmation(Request $request)
-    // {
-    //     return $request->all();
-    // }
-
     // Application Status Change on Edit Registration
     public function appRegisStatusChange($id){
         
@@ -180,11 +167,11 @@ class AppRegistrationController extends Controller
         $appData = AppReg::find($id);
         // $appData->profileId;
         $appID = $appData->id;
-
         $name = $appData->first_name;
         $surname = $appData->last_name;
-        // $email = $appData->email;
+        $email = $appData->email;
         $phone = $appData->phone;
+        $formattedPhone = $appData->formattedPhone;
         $carrierCode = $appData->carrierCode;
         // $appData->dob
         $role = $appData->rule;
@@ -192,26 +179,26 @@ class AppRegistrationController extends Controller
         $regisrationNum = $appData->company_number;
         $company_type = $appData->company_type;
         $companyIndustry = $appData->companyIndustry;
-        // $appData->registeredCountry
+        $registeredCountry = $appData->registeredCountry;
         $sourceOfFunds = $appData->source_of_funds; 
-        // $appData->streetAddress 
+        $streetAddress = $appData->streetAddress; 
         $city = $appData->cityState; 
-        // $appData->zipCode 
+        $zipCode = $appData->zipCode; 
         $ipAddress = $appData->ipAddress; 
         // $appData->status 
         // $appData->dateTime 
 
         //random email
-        $randomId       =   rand(70,5000);
-        $randomEmail = 'smarttech4422+'.$randomId.'@gmail.com';
+        //$randomId       =   rand(70,5000);
+        //$randomEmail = 'smarttech4422+'.$randomId.'@gmail.com';
         $apiUrl = 'https://sandbox.weavr.io/multi/corporates';
         $requestArray = [
-              'profileId' => '108520013424099341',
+              'profileId' => '109477689009176589',
               'tag' => '00111',
               'rootUser' => [
                 'name' => $name,
                 'surname' => $surname,
-                'email' => $randomEmail,
+                'email' => $email,
                 'mobile' => [
                   'countryCode' => $carrierCode,
                   'number' => $phone,
@@ -226,16 +213,15 @@ class AppRegistrationController extends Controller
               'company' => [
                 'type' => $company_type,
                 'businessAddress' => [
-                  'addressLine1' => 'ABC',
-                  'addressLine2' => '123',
+                  'addressLine1' => $streetAddress,
                   'city' => $city,
-                  'postCode' => '56423',
-                  'state' => 'NewLondon',
-                  'country' => 'GB',
+                  'postCode' => $zipCode,
+                  'state' => $city,
+                  'country' => $registeredCountry,
                 ],
                 'name' => $company_name,
                 'registrationNumber' => $regisrationNum,
-                'registrationCountry' => 'GB',
+                'registrationCountry' => $registeredCountry,
               ],
               'industry' => $companyIndustry,
               'sourceOfFunds' => $sourceOfFunds,
@@ -247,11 +233,11 @@ class AppRegistrationController extends Controller
         ];
 
         //dd($requestArray);
+        
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'api-key' => '4mQSEJoUMqUBf/8DzCUBDg=='
+            'api-key' => 'pVz2Hs0XmD0BhPFgzCgBCA=='
         ])->post($apiUrl, $requestArray);
-
 
         if($response->status() === 200){
 
@@ -261,10 +247,14 @@ class AppRegistrationController extends Controller
 
                 $first_name = $responseData['rootUser']['name'];
                 $last_name = $responseData['rootUser']['surname'];
+                $CountryCode = $responseData['rootUser']['mobile']['countryCode'];
+                $phoneNumber = $responseData['rootUser']['mobile']['number'];
+                $formattedPhone = $CountryCode.$phoneNumber;
                 $email = $responseData['rootUser']['email'];
                 $sourceOfFunds = $responseData['sourceOfFunds'];
                 $companyIndustry = $responseData['industry'];
                 $company_type = $responseData['company']['type'];
+                $ipAddress = $responseData['ipAddress'];
 
                 DB::table('applications')
                 ->updateOrInsert(
@@ -285,16 +275,18 @@ class AppRegistrationController extends Controller
                         'type' => 'user',
                         'first_name' => $first_name,
                         'last_name' => $last_name,
+                        'formattedPhone' => $formattedPhone,
                         'email' => $email,
-                        'status' => 'Inactive' 
+                        'status' => 'Inactive', 
+                        'ip_address' => $ipAddress 
                     ]);
-
+                
                 // send email
                 $apiUrlforEmail ='https://sandbox.weavr.io/multi/corporates/verification/email/send';
                 $reqArrayforEmail = [ 'email' => $email ]; 
                 $sendEmailresponse = Http::withHeaders([
                     'Content-Type' => 'application/json',
-                    'api-key' => '4mQSEJoUMqUBf/8DzCUBDg=='
+                    'api-key' => 'pVz2Hs0XmD0BhPFgzCgBCA=='
                 ])->post($apiUrlforEmail, $reqArrayforEmail);
                 // end send email
 

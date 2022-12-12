@@ -383,33 +383,76 @@ class LoginController extends Controller
     public function getAppEmailVerification(Request $request)
     {
         $emailData = $request->query();
-
-        return view('emails.app-email', ['emailData' => $emailData]);
+        return view('frontend.pages.appEmailVerify', [ 'emailData'=> $emailData]);
     }
 
     public function appEmailconfirmation(Request $request)
     {
+        $checkEmailVerification = User::where(['email' => $request->email, 'email_verification' => '0'])->first(['id','email']);
         
-        $checkEmailVerification = User::where(['email' => $request->email])->first(['id']);
-        $userID = $checkEmailVerification->id;
-        if($checkEmailVerification->user_detail->email_verification == 0){
-            
+        if(empty($checkEmailVerification)){
+            $this->helper->one_time_message('success', __('Your Email has been verified Already. Create your first time password'));
+            return redirect()->action('Auth\LoginController@createApplicationPassword',['userEmail'=>$request->email]);
+        }else{
+            $userID = $checkEmailVerification->id;
+            $userEmail = $checkEmailVerification->email;
             $requestArray = [
                 'email' => $request->email,
-                'verificationCode'=>'123456', 
+                'verificationCode'=>$request->nonce, 
             ];
 
             $apiUrl = 'https://sandbox.weavr.io/multi/corporates/verification/email/verify';
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
-                'api-key' => '4mQSEJoUMqUBf/8DzCUBDg=='
+                'api-key' => 'pVz2Hs0XmD0BhPFgzCgBCA=='
             ])->post($apiUrl, $requestArray);
 
             if($response->status() === 204){
-                UserDetail::where('user_id', $userID)->update(['first_password' => '1']);
+                User::where('id', $userID)->update(['email_verification' => '1']);
+                $this->helper->one_time_message('success', __('Your Email has been verified successfully.'));
+                return redirect()->action('Auth\LoginController@createApplicationPassword',['userEmail'=>$userEmail]);
             }else{
                 return $response->status();
             }
+
+        }
+    }
+
+    public function createApplicationPassword(Request $request)
+    {
+        //$data['title'] = 'Application Password';
+        $userEmail = $request->userEmail;
+        return view('frontend.pages.appPassword', compact('userEmail'));
+    }
+
+    public function storeApplicationPassword(Request $request)
+    {
+        $checkFirstPassword = USER::where(['email' => $request->email, 'first_password' => '0'])->first(['id']);
+        if(empty($checkFirstPassword)){
+            $this->helper->one_time_message('success', __('Password has been created already. Please click on forget password link'));
+            return redirect('/login');
+        }else{
+
+            $requestArray = [
+                    "password" => [
+                      "value" => $request->password
+                    ]
+                ];
+            $apiURL = 'https://sandbox.weavr.io/multi/passwords/109477689009176589/create';
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+                'api-key' => 'pVz2Hs0XmD0BhPFgzCgBCA=='
+            ])->post($apiURL, $requestArray);
+            
+            if($response->status() === 200){
+                //USER::where(['id' => $userID])->update(['first_password' => '1', 'password' => $userPassword]);
+                $this->helper->one_time_message('success', __('Password has been created successfully.'));
+                return redirect('/login');
+            }else{
+                return $response->status();
+            }
+            // $userID = $checkFirstPassword->id;
+            // $userPassword = \Hash::make($request->password);
 
         }
     }

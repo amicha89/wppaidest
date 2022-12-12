@@ -26,6 +26,7 @@
                         <!-- form card login -->
                         <div class="card rounded-0">
                             <div class="card-header">
+                                <h2>here</h2>
                                 <h3 class="mb-0 text-left">@lang('message.form.forget-password-form')</h3>
                             </div>
                             <div class="card-body">

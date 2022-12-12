@@ -101,7 +101,7 @@
                                     <label class="col-sm-3 control-label require" for="rule">Company Position</label>
                                     <div class="col-sm-6">
                                         <select class="select2" name="rule" id="rule">
-                                            <option value='AUTHORIZED_REPRESENTATIVE'>Authorized Representative</option>
+                                            <option value='AUTHORISED_REPRESENTATIVE'>Authorised Representative</option>
                                             <option value='DIRECTOR'>Company Director</option>
                                         </select>
                                     </div>

@@ -124,7 +124,7 @@
                                     <label class="col-sm-3 control-label" for="rule">Company Position</label>
                                     <div class="col-sm-6">
                                         <select class="select2 form-control" name="rule" id="rule">
-                                            <option value='AUTHORIZED_REPRESENTATIVE' {{ $applications->source_of_funds == "AUTHORIZED_REPRESENTATIVE" ? 'selected' : '' }}>Authorized Representative</option>
+                                            <option value='AUTHORISED_REPRESENTATIVE' {{ $applications->source_of_funds == "AUTHORISED_REPRESENTATIVE" ? 'selected' : '' }}>Authorised Representative</option>
                                             <option value='DIRECTOR' {{ $applications->source_of_funds == "DIRECTOR" ? 'selected' : '' }}>Company Director</option>
                                         </select>
                                     </div>

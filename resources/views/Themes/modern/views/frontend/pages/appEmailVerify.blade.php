@@ -1,5 +1,7 @@
 @extends('frontend.layouts.app')
+
 @section('content')
+
 <!--Start banner Section-->
 <section class="bg-image mt-93">
     <div class="bg-dark">

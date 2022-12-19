@@ -59,6 +59,7 @@
         </div>
     </div>
 
+
     <div class="box mt-20">
         <div class="box-body">
             <div class="row">
@@ -125,174 +126,6 @@
                                             </div>
                                         </div>
 
-                                        <!-- Company Data -->
-                                        <div class="form-group">
-                                            <label class="col-sm-4 control-label" for="inputEmail3">
-                                                Company Name
-                                            </label>
-                                            <div class="col-sm-8">
-                                                <input class="form-control" placeholder="Enter Company Name" name="company_name" type="text" id="last_name" value="{{ $applications->company_name ?? '' }}">
-                                                </input>
-                                                @if($errors->has('company_name'))
-                                                    <span class="error">
-                                                        {{ $errors->first('company_name') }}
-                                                    </span>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="col-sm-4 control-label" for="inputEmail3">
-                                                Company Name
-                                            </label>
-                                            <div class="col-sm-8">
-                                                <input class="form-control" placeholder="Enter Company Name" name="company_name" type="text" id="last_name" value="{{ $applications->company_name ?? '' }}">
-                                                </input>
-                                                @if($errors->has('company_name'))
-                                                    <span class="error">
-                                                        {{ $errors->first('company_name') }}
-                                                    </span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-4 control-label" for="rule">Company Position</label>
-                                            <div class="col-sm-8">
-                                                <select class="select2 form-control" name="rule" id="rule">
-                                                    <option value='AUTHORISED_REPRESENTATIVE' {{ $applications->rule == "AUTHORISED_REPRESENTATIVE" ? 'selected' : '' }}>Authorised Representative</option>
-                                                    <option value='DIRECTOR' {{ $applications->rule == "DIRECTOR" ? 'selected' : '' }}>Company Director</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="col-sm-4 control-label" for="">
-                                                Registration Number
-                                            </label>
-                                            <div class="col-sm-8">
-                                                <input class="form-control" placeholder="Enter Registration Number" name="company_number" type="text" id="" value="{{ $applications->company_number ?? '' }}">
-                                                </input>
-                                                @if($errors->has('company_number'))
-                                                    <span class="error">
-                                                        {{ $errors->first('company_number') }}
-                                                    </span>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="col-sm-4 control-label" for="company_type">Company Type</label>
-                                            <div class="col-sm-8">
-                                                <select class="select2 form-control" name="company_type" id="company_type">
-                                                    <option value='SOLE_TRADER' {{ $applications->source_of_funds == "SOLE_TRADER" ? 'selected' : '' }}>Sole Trader</option>
-                                                    <option value='LTD_COMPANY' {{ $applications->source_of_funds == "LTD_COMPANY" ? 'selected' : '' }}>LTD Company</option>
-                                                    <option value='LLP_COMPANY' {{ $applications->source_of_funds == "LLP_COMPANY" ? 'selected' : '' }}>LLP Company</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="col-sm-4 control-label" for="companyIndustry">Company Industry</label>
-                                            <div class="col-sm-8">
-                                                <select class="select2 form-control" name="companyIndustry" id="companyIndustry">
-                                                    <option value='ACCOUNTING' {{ $applications->source_of_funds == "ACCOUNTING" ? 'selected' : '' }}>ACCOUNTING</option>
-                                                    <option value='AUDIT' {{ $applications->source_of_funds == "AUDIT" ? 'selected' : '' }}>AUDIT</option>
-                                                    <option value='FINANCE' {{ $applications->source_of_funds == "FINANCE" ? 'selected' : '' }}>FINANCE</option>
-                                                    <option value='PUBLIC_SECTOR_ADMINISTRATION' {{ $applications->source_of_funds == "PUBLIC_SECTOR_ADMINISTRATION" ? 'selected' : '' }}>PUBLIC SECTOR ADMINISTRATION</option>
-                                                    <option value='ART_ENTERTAINMENT' {{ $applications->source_of_funds == "ART_ENTERTAINMENT" ? 'selected' : '' }}>ART ENTERTAINMENT</option>
-                                                    <option value='ART_ENTERTAINMENT' {{ $applications->source_of_funds == "ART_ENTERTAINMENT" ? 'selected' : '' }}>AUTO AVIATION</option>
-                                                    <option value='BANKING_LENDING' {{ $applications->source_of_funds == "BANKING_LENDING" ? 'selected' : '' }}>BANKING LENDING</option>
-                                                    <option value='BUSINESS_CONSULTANCY_LEGAL' {{ $applications->source_of_funds == "BUSINESS_CONSULTANCY_LEGAL" ? 'selected' : '' }}>BUSINESS CONSULTANCY LEGAL</option>
-                                                    <option value='CONSTRUCTION_REPAIR' {{ $applications->source_of_funds == "CONSTRUCTION_REPAIR" ? 'selected' : '' }}>CONSTRUCTION REPAIR</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="col-sm-4 control-label" for="">
-                                                Registered Country
-                                            </label>
-                                            <div class="col-sm-8">
-                                                <input class="form-control" placeholder="Enter Company Name" name="registeredCountry" type="text" id="" value="{{ $applications->registeredCountry ?? '' }}">
-                                                </input>
-                                                @if($errors->has('registeredCountry'))
-                                                    <span class="error">
-                                                        {{ $errors->first('registeredCountry') }}
-                                                    </span>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                        <label class="col-sm-4 control-label" for="source_of_funds">Source of Funds</label>
-                                        <div class="col-sm-8">
-                                            <select class="select2 form-control" name="source_of_funds" id="source_of_funds">
-                                                <option value='LABOUR_CONTRACT' {{ $applications->source_of_funds == "LABOUR_CONTRACT" ? 'selected' : '' }} >LABOUR CONTRACT</option>
-                                                <option value='CIVIL_CONTRACT' {{ $applications->source_of_funds == "CIVIL_CONTRACT" ? 'selected' : '' }}>CIVIL CONTRACT</option>
-                                                <option value='FUNDS_FROM_OTHER_AUXILIARY_SOURCES' {{ $applications->source_of_funds == "FUNDS_FROM_OTHER_AUXILIARY_SOURCES" ? 'selected' : '' }}>FUNDS FROM OTHER AUXILIARY SOURCES</option>
-                                                <option value='RENT' {{ $applications->source_of_funds == "RENT" ? 'selected' : '' }}>RENT</option>
-                                                <option value='FUNDS_FROM_OTHER_AUXILIARY_SOURCES' {{ $applications->source_of_funds == "FUNDS_FROM_OTHER_AUXILIARY_SOURCES" ? 'selected' : '' }}>FUNDS FROM OTHER AUXILIARY SOURCES</option>
-                                                <option value='SALE_OF_MOVABLE_ASSETS' {{ $applications->source_of_funds == "SALE_OF_MOVABLE_ASSETS" ? 'selected' : '' }}>SALE OF MOVABLE ASSETS</option>
-                                                <option value='SALE_OF_REAL_ESTATE' {{ $applications->source_of_funds == "SALE_OF_REAL_ESTATE" ? 'selected' : '' }}>SALE OF REAL ESTATE</option>
-                                            </select>
-                                        </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="col-sm-4 control-label" for="streetAddress">
-                                                Street Address
-                                            </label>
-                                            <div class="col-sm-8">
-                                                <input class="form-control" placeholder="Enter Street Address" name="streetAddress" type="text" id="streetAddress" value="{{ $applications->streetAddress ?? '' }}">
-                                                </input>
-                                                @if($errors->has('streetAddress'))
-                                                    <span class="error">
-                                                        {{ $errors->first('streetAddress') }}
-                                                    </span>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="col-sm-4 control-label" for="cityState">
-                                                City / State
-                                            </label>
-                                            <div class="col-sm-8">
-                                                <input class="form-control" placeholder="Enter City/State" name="cityState" type="text" id="cityState" value="{{ $applications->cityState ?? '' }}">
-                                                </input>
-                                                @if($errors->has('cityState'))
-                                                    <span class="error">
-                                                        {{ $errors->first('cityState') }}
-                                                    </span>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="col-sm-4 control-label" for="zipCode">
-                                                Zip Code
-                                            </label>
-                                            <div class="col-sm-8">
-                                                <input class="form-control" placeholder="Enter Zip Code" name="zipCode" type="text" id="" value="{{ $applications->zipCode ?? '' }}">
-                                                </input>
-                                                @if($errors->has('zipCode'))
-                                                    <span class="error">
-                                                        {{ $errors->first('zipCode') }}
-                                                    </span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <!-- Status -->
-                                        <div class="form-group">
-                                            <label class="col-sm-4 control-label" for="status">Company Status</label>
-                                            <div class="col-sm-8">
-                                                <select class="select2 form-control" name="status" id="status">
-                                                    <option value='0' {{ $applications->status == '0' ? 'selected' : '' }}>Pending</option>
-                                                    <option value='1' {{ $applications->status == '1' ? 'selected' : '' }}>Processing</option>
-                                                    <option value='2' {{ $applications->status == '2' ? 'selected' : '' }}>Rejected</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <!-- end Company Data -->
                                         <!-- Role -->
                                         <div class="form-group">
                                             <label class="col-sm-4 control-label require" for="inputEmail3">Group</label>
@@ -305,7 +138,6 @@
                                             </div>
                                         </div>
 
-<!-- 
 
                                         <div class="form-group">
                                             <label class="col-sm-4 control-label" for="inputEmail3">
@@ -323,7 +155,7 @@
                                             <div class="col-sm-8">
                                                 <input class="form-control" placeholder="Confirm password (min 6 characters)" name="password_confirmation" type="password" id="password_confirmation">
                                             </div>
-                                        </div> -->
+                                        </div>
 
                                         <!-- Status -->
                                         <div class="form-group">
@@ -337,6 +169,7 @@
                                                 <label id="user-status" class="error" for="status"></label>
                                             </div>
                                         </div>
+
                                         <div class="form-group">
                                             <label class="col-sm-4" for="inputEmail3">
                                             </label>

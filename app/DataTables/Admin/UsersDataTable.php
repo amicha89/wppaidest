@@ -33,12 +33,6 @@ class UsersDataTable extends DataTable
             ->addColumn('last_login_ip', function ($user) {
                 return !empty($user->user_detail->last_login_ip) ? $user->user_detail->last_login_ip : '-';
             })
-            ->addColumn('email', function ($user) {
-                if($user->email_verification === 1)
-                    return !empty($user->email) ? $user->email . '&nbsp&nbsp<span class="label label-success">Verified</span>' : '-';
-                else
-                    return !empty($user->email) ? $user->email : '-';
-            })
             ->addColumn('status', function ($user) {
                 $status = '';
 
@@ -67,7 +61,7 @@ class UsersDataTable extends DataTable
                 $delete = (Common::has_permission(Auth::guard('admin')->user()->id, 'delete_user')) ? '<a href="' . url(Config::get('adminPrefix') . '/users/delete/' . $user->id) . '" class="btn btn-xs btn-danger delete-warning"><i class="glyphicon glyphicon-trash"></i></a>' : '';
                 return $edit . $delete;
             })
-            ->rawColumns(['first_name', 'last_name', 'status', 'email', 'action'])
+            ->rawColumns(['first_name', 'last_name', 'status', 'action'])
             ->make(true);
     }
 

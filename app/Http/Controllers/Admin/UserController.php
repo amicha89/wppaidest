@@ -26,7 +26,6 @@ use App\Models\{ActivityLog,
     Wallet,
     Ticket,
     QrCode,
-    AppReg,
     Admin,
     User,
     Role
@@ -168,9 +167,7 @@ class UserController extends Controller
         $data['sub_menu'] = 'users_list';
 
         $data['users'] = User::find($id);
-        //dd($data['users']['email']);
-        $data['applications'] = AppReg::where('email', $data['users']['email'])->first();
-        //dd($date['application']['company_name']);
+
         $data['roles'] = Role::select('id', 'display_name')->where('user_type', "User")->get();
         if(!g_c_v() && a_u_c_v()) {
             Session::flush();

@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use App\Http\Helpers\Common;
 use App\Models\{DeviceLog,
     EmailTemplate,
-    ApiCredential,
     ActivityLog,
     VerifyUser,
     Preference,
@@ -24,7 +23,7 @@ use App\Models\{DeviceLog,
     User
 };
 use Carbon\Carbon;
-use Exception, URL;
+use Exception;
 use Illuminate\Support\Str;
 
 class LoginController extends Controller
@@ -389,12 +388,10 @@ class LoginController extends Controller
 
     public function appEmailconfirmation(Request $request)
     {
-        $checkEmailVerification = User::where(['email' => $request->email])->first(['id','email','email_verification']);
+        $checkEmailVerification = User::where(['email' => $request->email, 'email_verification' => '0'])->first(['id','email']);
+        
         if(empty($checkEmailVerification)){
-            $this->helper->one_time_message('danger', __('Requested Email is not available...'));
-            return back();
-        }elseif($checkEmailVerification->email_verification === 1){
-            $this->helper->one_time_message('success', __('Email has been verified already, Please create first time password...'));
+            $this->helper->one_time_message('success', __('Your Email has been verified Already. Create your first time password'));
             return redirect()->action('Auth\LoginController@createApplicationPassword',['userEmail'=>$request->email]);
         }else{
             $userID = $checkEmailVerification->id;
@@ -404,12 +401,10 @@ class LoginController extends Controller
                 'verificationCode'=>$request->nonce, 
             ];
 
-            $apiKey = ApiCredential::where('name', 'api_credential')->first();
-            $apiKey = $apiKey['value']['api_key'];
-            $apiUrl = config('weavrapiurl.corporateEmailVerify');
+            $apiUrl = 'https://sandbox.weavr.io/multi/corporates/verification/email/verify';
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
-                'api-key' => $apiKey
+                'api-key' => 'pVz2Hs0XmD0BhPFgzCgBCA=='
             ])->post($apiUrl, $requestArray);
 
             if($response->status() === 204){
@@ -427,60 +422,34 @@ class LoginController extends Controller
     {
         //$data['title'] = 'Application Password';
         $userEmail = $request->userEmail;
-        $apiKey = ApiCredential::where('name', 'api_credential')->first();
-        $ui_key = $apiKey['value']['ui_key'];
-        return view('frontend.pages.appPassword', compact('userEmail','ui_key'));
+        return view('frontend.pages.appPassword', compact('userEmail'));
     }
 
     public function storeApplicationPassword(Request $request)
     {
-        //return $request->all();
-        $uPass = $request->password;
-        $uEmail = $request->username;
-
-        $checkFirstPassword = USER::where(['email' => $uEmail, 'first_password' => '0'])->first(['id']);
+        $checkFirstPassword = USER::where(['email' => $request->email, 'first_password' => '0'])->first(['id']);
         if(empty($checkFirstPassword)){
-
-            $redirect = redirect()->intended(URL::route('login'));
-            $error = $this->helper->one_time_message('success', __('Password has been created already. Please click on forget password link'));
-            if ($request->ajax()) {          
-                return response()->json([
-                    'errors' => $error
-                ]);
-            }
-            return $redirect;
-            //$this->helper->one_time_message('success', __('Password has been created already. Please click on forget password link'));
-            //return redirect('/login');
+            $this->helper->one_time_message('success', __('Password has been created already. Please click on forget password link'));
+            return redirect('/login');
         }else{
-            
+
             $requestArray = [
                     "password" => [
-                      "value" => $uPass
+                      "value" => $request->password
                     ]
                 ];
-            $apiKey = ApiCredential::where('name', 'api_credential')->first();
-            $apiKey = $apiKey['value']['api_key'];
-            $apiURL = config('weavrapiurl.createPassword');
+            $apiURL = 'https://sandbox.weavr.io/multi/passwords/109477689009176589/create';
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
-                'api-key' => $apiKey
+                'api-key' => 'pVz2Hs0XmD0BhPFgzCgBCA=='
             ])->post($apiURL, $requestArray);
             
-            
-
-            if($response->status() != 200 && $request->ajax()){
-                //$redirectback =  redirect()->intended(URL::route('verify-email'));
-                
-                $errorResponse = $response->status();
-                $error = $this->helper->one_time_message('danger', __($errorResponse));
-                return response()->json([
-                    'error' => $error
-                ],$errorResponse);
-            }else{
-
-                USER::where(['email' => $uEmail])->update(['first_password' => '1']);
-                $this->helper->one_time_message('success', __('Password has been created successfully. Please login'));
+            if($response->status() === 200){
+                //USER::where(['id' => $userID])->update(['first_password' => '1', 'password' => $userPassword]);
+                $this->helper->one_time_message('success', __('Password has been created successfully.'));
                 return redirect('/login');
+            }else{
+                return $response->status();
             }
             // $userID = $checkFirstPassword->id;
             // $userPassword = \Hash::make($request->password);

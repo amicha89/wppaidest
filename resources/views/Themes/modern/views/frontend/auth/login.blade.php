@@ -7,7 +7,7 @@
             <div class="container">
                 <div class="row py-5">
                     <div class="col-md-12">
-                        <h2 class="text-white font-weight-bold text-28">@lang('message.login.title') </h2>
+                        <h2 class="text-white font-weight-bold text-28">@lang('message.login.title')</h2>
                     </div>
                 </div>
             </div>

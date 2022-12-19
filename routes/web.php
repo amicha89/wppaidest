@@ -380,7 +380,7 @@ Route::group(['middleware' => ['no_auth:users', 'locale']], function ()
 {
     Route::get('/login', 'Auth\LoginController@index')->name("login");
     Route::post('/authenticate', 'Auth\LoginController@authenticate');
-    Route::get('/verify', 'Auth\LoginController@getAppEmailVerification'); //app email verify view
+    Route::get('/verify', 'Auth\LoginController@getAppEmailVerification')->name('verify'); //app email verify view
     Route::post('/verify-email', 'Auth\LoginController@appEmailconfirmation')->name('verify-email'); // appEmail Confirmation
     Route::get('/create-password','Auth\LoginController@createApplicationPassword'); // create application password
     Route::post('/create-password/store', 'Auth\LoginController@storeApplicationPassword')->name('password-store'); // store application Password

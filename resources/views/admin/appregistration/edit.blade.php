@@ -40,9 +40,10 @@
                 <form action="{{ route('appRegis.update', $applications->id) }}" class="form-horizontal" id="user_form" method="POST">
                         @csrf
                         @method('POST')
-                        <input type="hidden" name="defaultCountry" id="defaultCountry" class="form-control">
-                        <input type="hidden" name="carrierCode" id="carrierCode" class="form-control">
-                        <input type="hidden" name="formattedPhone" id="formattedPhone" class="form-control">
+                        <input type="hidden" value="{{ $applications->id }}" name="id" id="id" />
+                        <input type="hidden" value="{{ $applications->defaultCountry }}" name="user_defaultCountry" id="user_defaultCountry" />
+                        <input type="hidden" value="{{ $applications->carrierCode }}" name="user_carrierCode" id="user_carrierCode" />
+                        <input type="hidden" name="formattedPhone" id="formattedPhone">
 
                             <div class="box-body">
                                 <div class="form-group">
@@ -99,7 +100,7 @@
                                         Phone
                                     </label>
                                     <div class="col-sm-6">
-                                        <input type="tel" class="form-control" value="{{ $applications->phone ?? '' }}" id="phone" name="phone">
+                                        <input type="tel" class="form-control" id="appphone" name="phone">
                                         <span id="phone-error"></span>
                                         <span id="tel-error"></span>
                                     </div>
@@ -110,7 +111,7 @@
                                         Date of Birth
                                     </label>
                                     <div class="col-sm-6">
-                                        <input class="form-control" placeholder="" name="dob" type="text" id="dob" value="{{ $applications->dob }}">
+                                        <input class="form-control" placeholder="" name="dob" type="text" id="dob" value="{{ $applications->dob ?? '' }}">
                                         </input>
                                         @if($errors->has('dob'))
                                             <span class="error">
@@ -124,8 +125,8 @@
                                     <label class="col-sm-3 control-label" for="rule">Company Position</label>
                                     <div class="col-sm-6">
                                         <select class="select2 form-control" name="rule" id="rule">
-                                            <option value='AUTHORISED_REPRESENTATIVE' {{ $applications->source_of_funds == "AUTHORISED_REPRESENTATIVE" ? 'selected' : '' }}>Authorised Representative</option>
-                                            <option value='DIRECTOR' {{ $applications->source_of_funds == "DIRECTOR" ? 'selected' : '' }}>Company Director</option>
+                                            <option value='AUTHORISED_REPRESENTATIVE' {{ $applications->rule == "AUTHORISED_REPRESENTATIVE" ? 'selected' : '' }}>Authorised Representative</option>
+                                            <option value='DIRECTOR' {{ $applications->rule == "DIRECTOR" ? 'selected' : '' }}>Company Director</option>
                                         </select>
                                     </div>
                                 </div>
@@ -273,7 +274,6 @@
                                         </select>
                                     </div>
                                 </div>
-
                                 <div class="box-footer">
                                     <a class="btn btn-theme-danger pull-left" href="{{ url(\Config::get('adminPrefix').'/app-registrations') }}" id="users_cancel">Cancel</a>
                                     <button type="submit" class="btn btn-theme pull-right" id="users_create"><i class="fa fa-spinner fa-spin" style="display: none;"></i> <span id="users_create_text">Update</span></button>
@@ -307,5 +307,33 @@
             </div>
         </div>
     </div>
-
 @endsection
+
+@push('extra_body_scripts')
+<script src="{{ asset('public/dist/js/jquery.validate.min.js') }}" type="text/javascript"></script>
+<script src="{{ asset('public/backend/intl-tel-input-13.0.0/intl-tel-input-13.0.0/build/js/intlTelInput.js')}}" type="text/javascript"></script>
+<script src="{{ asset('public/dist/js/isValidPhoneNumber.js') }}" type="text/javascript"></script>
+<script type="text/javascript">
+    'use strict';
+    var input = document.querySelector("#appphone");
+    window.intlTelInput(input, {
+        initialCountry: "auto",
+        geoIpLookup: function(success, failure) {
+            $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+                var countryCode = (resp && resp.country) ? resp.country : "";
+                success(countryCode);
+            });
+        },
+        utilsScript: '{{ url("public/backend/intl-tel-input-13.0.0/intl-tel-input-13.0.0/build/js/utils.js") }}'
+    });
+    // var hasPhoneError = false;
+    // var hasEmailError = false;
+    // var utilsScriptLoadingPath = '{{ url("public/backend/intl-tel-input-13.0.0/intl-tel-input-13.0.0/build/js/utils.js") }}';
+    // var formattedPhoneNumber = '{{ !empty($applications->formattedPhone) ? $applications->formattedPhone : NULL }}';
+    // var carrierCode = '{{ !empty($applications->carrierCode) ? $applications->carrierCode : NULL }}';
+    // var defaultCountry = '{{ !empty($applications->defaultCountry) ? $applications->defaultCountry : NULL }}';
+    // var validPhoneNumberErrorText = '{{ __("Please enter a valid international phone number.") }}';
+    // var updatingText = '{{ __("Updating...") }}';
+</script>
+<script src="{{ asset('public/dist/js/admin_custom.min.js') }}" type="text/javascript"></script>
+@endpush

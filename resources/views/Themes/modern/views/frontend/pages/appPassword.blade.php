@@ -67,16 +67,7 @@
 											@endif
 										</div>
 									
-										<!-- <div class="form-group">
-											<label for="confirmpass_only">Confirm Password</label>
-											<input type="password"  value="" class="form-control" aria-describedby="phoneHelp" placeholder="" name="password_confirmation" id="confirmpass_only">
-
-											@if($errors->has('password_confirmation'))
-												<span class="error">
-													{{ $errors->first('password_confirmation') }}
-												</span>
-											@endif
-										</div>                                         -->
+				
 									<div class="row">
 										<div class="col-md-8">
 										<button type="button" onclick="onSubmit()" class="btn btn-grad mt-4" id="password_create">

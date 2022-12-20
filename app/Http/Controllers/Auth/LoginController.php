@@ -461,7 +461,7 @@ class LoginController extends Controller
                 $apiKey = ApiCredential::where('name', 'api_credential')->first();
                 $apiKey = $apiKey['value']['api_key'];
                 
-                $apiURL = config('weavrapiurl.createPassword');
+                $apiURL = 'https://sandbox.weavr.io/multi/passwords/109438114931343368/create';
                 $response = Http::withHeaders([
                     'Content-Type' => 'application/json',
                     'api-key' => $apiKey

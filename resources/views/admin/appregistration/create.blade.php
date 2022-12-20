@@ -3,6 +3,7 @@
 @section('title', 'Add Application')
 
 @section('head_style')
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet">
   <!-- intlTelInput -->
   <link rel="stylesheet" type="text/css" href="{{ asset('public/backend/intl-tel-input-13.0.0/intl-tel-input-13.0.0/build/css/intlTelInput.css')}}">
 @endsection
@@ -87,7 +88,7 @@
                                         Date of Birth
                                     </label>
                                     <div class="col-sm-6">
-                                        <input class="form-control" placeholder="" name="dob" type="text" id="dob" value="">
+                                        <input class="form-control" placeholder="" name="dob" type="text" id="appdateTime" value="">
                                         </input>
                                         @if($errors->has('dob'))
                                             <span class="error">
@@ -268,17 +269,20 @@
 
 <!-- jquery.validate -->
 <script src="{{ asset('public/dist/js/jquery.validate.min.js') }}" type="text/javascript"></script>
-
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
 <script src="{{ asset('public/backend/intl-tel-input-13.0.0/intl-tel-input-13.0.0/build/js/intlTelInput.js') }}" type="text/javascript"></script>
 
 <!-- isValidPhoneNumber -->
 <script src="{{ asset('public/dist/js/isValidPhoneNumber.js') }}" type="text/javascript"></script>
 
 <script type="text/javascript">
+    $('#appdateTime').datetimepicker({
+		format: 'DD-MM-YYYY'
+	});
     'use strict';
     var hasPhoneError = false;
     var hasEmailError = false;
-    var countryShortCode = 'GB';
+    var countryShortCode = '{{ getDefaultCountry() }}';
     var userNameError = '{{ __("Please enter only alphabet and spaces") }}';
     var userNameLengthError = '{{ __("Name length can not be more than 30 characters") }}';
     var passwordMatchErrorText = '{{ __("Please enter same value as the password field.") }}';

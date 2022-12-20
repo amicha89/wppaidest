@@ -13,7 +13,7 @@
     </div>
 </section>
 <!--End banner Section-->
-
+<?php    //$ui_key = 's/3EsAP9/isBf/8DzCUADg=='; ?>
 <!--Start Section-->
 <section class="sign-up padding-30 pb-44">
     <div class="container">
@@ -26,6 +26,7 @@
                             <!-- <div>
                                 <h3 class="mb-0 font-weight-bold">Verify Your Email Address</h3>
                             </div> -->
+                            @include('frontend.layouts.common.alert')
                             <div class="alert alert-info">
                                 <h4 class="alert-heading"><i class="fas fa-exclamation-circle"></i>&nbsp;Password Must be...</h4>
                             <div class="pt-2 pl-4">
@@ -37,17 +38,15 @@
                                     <li>Different from any of the 5 last such passwords used.</li>
                                 </ul>
                             </div>
-
+<!-- action="{{ route('password-store') }}" -->
                             </div>
 							<div class="card-body">
-								@include('frontend.layouts.common.alert')
-								<form action="{{ route('password-store') }}" method="post" id="create_password">
-										{{ csrf_field() }}
-										@method('POST')
-                                        
+
+								<form  id="create-password">
+										{{ csrf_field() }}                                      
                                         <div class="form-group">
 											<label for="password_only">Email</label>
-											<input type="email" value="{{ $userEmail ?? '' }}" class="form-control"  placeholder="" readonly onclick='return false;' name="email" id="email">
+											<input type="input" value="{{ $userEmail ?? '' }}" class="form-control"  placeholder="" readonly onclick='return false;' name="u" id="email">
 
 											@if($errors->has('password'))
 												<span class="error">
@@ -58,7 +57,8 @@
 
 										<div class="form-group">
 											<label for="password_only">Password</label>
-											<input type="password" value="" class="form-control"  placeholder="" name="password" id="password">
+                                            <div id="password" class="form-control"></div><br/>
+											
 
 											@if($errors->has('password'))
 												<span class="error">
@@ -67,7 +67,7 @@
 											@endif
 										</div>
 									
-										<div class="form-group">
+										<!-- <div class="form-group">
 											<label for="confirmpass_only">Confirm Password</label>
 											<input type="password"  value="" class="form-control" aria-describedby="phoneHelp" placeholder="" name="password_confirmation" id="confirmpass_only">
 
@@ -76,15 +76,22 @@
 													{{ $errors->first('password_confirmation') }}
 												</span>
 											@endif
-										</div>                                        
+										</div>                                         -->
 									<div class="row">
-										<div class="col-md-12">
-										<button type="submit" class="btn btn-grad mt-4" id="users_create">
+										<div class="col-md-8">
+										<button type="button" onclick="onSubmit()" class="btn btn-grad mt-4" id="password_create">
 											<i class="spinner fa fa-spinner fa-spin" style="display: none;"></i> 
-											<span id="users_create_text">Submit</span>
+											<span id="password_create">Submit</span>
 										</button>
 										</div>
+                                        <div class="col-md-4 get-color text-center" style="margin: 32px 0 6px 0px;" ><a href="{{url('forget-password')}}">@lang('message.login.forget-password')</a></div>
 									</div>
+                                    <!-- <div class="row">
+                                        <div class="col-md-12 get-color" style="margin: -2px 0 6px 0px;">
+                                            <br>
+                                            <a href="{{url('forget-password')}}">@lang('message.login.forget-password')</a>
+                                        </div>
+                                    </div> -->
 
 								</form>
 							</div>
@@ -99,8 +106,61 @@
 @endsection
 
 @section('js')
+<script src="https://build.weavr.io/app/secure/static/client.1.js"></script>
 <script src="{{theme_asset('public/js/jquery.validate.min.js')}}" type="text/javascript"></script>
-<script>
+
+<script type="text/javascript">
+    // Initialise the UI library using your ui_key. Replace ui_key with your own UI key.
+    window.OpcUxSecureClient.init('{{$ui_key}}');
+
+    // Create an instance of a secure form
+    var form = window.OpcUxSecureClient.form();
+    
+    // Create an instance of a secure Password component that will collect the password
+    var input = form.input(
+        'p', 
+        'password', 
+        {
+        placeholder: 'Password', 
+        maxlength: 20
+        }
+    );
+    // Embed the secure Password component in the HTML element where you want
+    // the Password component to the shown on screen
+    input.mount(document.getElementById('password'));
+
+    // Define this input so that the 'enter key' would submit the password input
+    input.on('submit', () => {
+    console.log('submit password input')
+    })
+
+    // Define a function that will be executed when the form is submitted by the user
+    function onSubmit() {
+        // Get the tokenised version of the password inputted by your customer
+        form.tokenize(function(tokens) {
+        
+            //console.log(tokens.p);
+            var uname = $('#email').val();
+            var Formdata = {password:tokens.p, username:uname};
+            console.log(Formdata);
+            jQuery.ajax({
+                url: '{{ route("password-store") }}',
+                type: 'POST',
+                data: Formdata,
+                success: function (res) {
+                    console.log(res.status);
+                    window.location.href = '/wppaidest/login';
+                },
+                error: function (error) {
+                    console.log(error.status);
+                    location.reload();  
+                }
+            });
+            
+        });
+    }
+</script>
+<!-- <script>
     // flag for button disable/enable
     var hasPhoneError = false;
     var hasEmailError = false;
@@ -174,5 +234,5 @@
     $.validator.addMethod("alpha", function(value, element) {
         return this.optional(element) || value == value.match(/^[a-zA-Z\s]+$/);
     });
-</script>
+</script> -->
 @endsection

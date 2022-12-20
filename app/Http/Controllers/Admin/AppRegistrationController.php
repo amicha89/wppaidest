@@ -41,8 +41,7 @@ class AppRegistrationController extends Controller
             'last_name' => 'required',
             'email' => 'required',
             'phone' => 'required',
-        ]); 
-        // dd($request->formattedPhone);
+        ]);
         AppReg::create([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
@@ -88,7 +87,6 @@ class AppRegistrationController extends Controller
             'first_name'    =>  'required',
             'last_name'    =>  'required',
             'email'    =>  'required',
-            'phone'    =>  'required',
             'dob'    =>  'required',
             'company_name'    =>  'required',
             'registeredCountry'    =>  'required',
@@ -101,7 +99,6 @@ class AppRegistrationController extends Controller
             'first_name'    =>  'First Name',
             'last_name'    =>  'Last Name',
             'email'    =>  'Valid Email Address',
-            'phone'    =>  'Phone Number',
             'dob'    =>  'Date of Birht',
             'company_name'    =>  'Company Name',
             'company_number'    =>  'Company Number',
@@ -112,9 +109,11 @@ class AppRegistrationController extends Controller
         );
         $validator = Validator::make($request->all(), $rules);
         $validator->setAttributeNames($fieldNames);
+        
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }else{
+            
             $appData = AppReg::find($id);
             $appData->first_name  = $request->first_name;
             $appData->last_name  = $request->last_name;
@@ -191,9 +190,11 @@ class AppRegistrationController extends Controller
         //random email
         //$randomId       =   rand(70,5000);
         //$randomEmail = 'smarttech4422+'.$randomId.'@gmail.com';
-        $apiUrl = 'https://sandbox.weavr.io/multi/corporates';
+        $apiUrl = config('weavrapiurl.createCorporate');
+        $profileID = config('weavrapiurl.profileId');
+        $apiKey = config('weavrapiurl.apiKey');
         $requestArray = [
-              'profileId' => '109477689009176589',
+              'profileId' => $profileID,
               'tag' => '00111',
               'rootUser' => [
                 'name' => $name,
@@ -236,7 +237,7 @@ class AppRegistrationController extends Controller
         
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'api-key' => 'pVz2Hs0XmD0BhPFgzCgBCA=='
+            'api-key' => $apiKey
         ])->post($apiUrl, $requestArray);
 
         if($response->status() === 200){
@@ -282,11 +283,12 @@ class AppRegistrationController extends Controller
                     ]);
                 
                 // send email
-                $apiUrlforEmail ='https://sandbox.weavr.io/multi/corporates/verification/email/send';
+                $apiKey = config('weavrapiurl.apiKey');
+                $apiUrlforEmail =config('weavrapiurl.sendVerificationEmail');
                 $reqArrayforEmail = [ 'email' => $email ]; 
                 $sendEmailresponse = Http::withHeaders([
                     'Content-Type' => 'application/json',
-                    'api-key' => 'pVz2Hs0XmD0BhPFgzCgBCA=='
+                    'api-key' => $apiKey
                 ])->post($apiUrlforEmail, $reqArrayforEmail);
                 // end send email
 
